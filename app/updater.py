@@ -18,7 +18,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-APP_VERSION = "0.4.0"
+APP_VERSION = "0.5.0"
 
 GITHUB_REPO = "Catriel-Kahla/SORT"
 RELEASES_API = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
