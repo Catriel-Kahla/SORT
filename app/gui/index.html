@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Emisión Masiva - Intimaciones de Patentes</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="badge">PC</span>
+      <div class="titulos">
+        <h1>Emisión Masiva</h1>
+        <p>Intimaciones de Deuda &middot; Patente Única sobre Vehículos</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span id="contadorArchivo" class="chip chip-muted">Sin archivo cargado</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="pantallaCarga" class="panel">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icono">&#128193;</div>
+        <h2>Cargá el archivo de Deuda de Patentes</h2>
+        <p>Arrastrá acá el archivo o hacé clic para elegirlo.</p>
+        <p class="hint">Formatos admitidos: .xlsx, .xlsm, .csv</p>
+        <button id="btnElegirArchivo" class="btn btn-primario">Elegir archivo</button>
+      </div>
+      <p id="mensajeError" class="mensaje-error oculto"></p>
+    </section>
+
+    <section id="pantallaListado" class="panel oculto">
+      <div class="toolbar">
+        <div class="toolbar-izq">
+          <label class="check-todos">
+            <input type="checkbox" id="checkTodos" />
+            Seleccionar todos
+          </label>
+          <input type="search" id="buscador" placeholder="Buscar por nombre, CUIT (con o sin guiones) o dominio..." />
+        </div>
+        <div class="toolbar-der">
+          <span id="resumenSeleccion" class="chip">0 seleccionados</span>
+          <button id="btnCambiarArchivo" class="btn btn-secundario">Cambiar archivo</button>
+        </div>
+      </div>
+
+      <div class="tabla-wrap">
+        <table id="tablaContribuyentes">
+          <thead>
+            <tr>
+              <th class="col-check"></th>
+              <th data-orden="cuit">CUIT/CUIL</th>
+              <th data-orden="nombre">Nombre / Razón social</th>
+              <th data-orden="domicilio">Domicilio</th>
+              <th class="col-num" data-orden="cant_dominios">Dominios</th>
+              <th class="col-num" data-orden="deuda_total">Deuda total</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTabla"></tbody>
+        </table>
+      </div>
+
+      <footer class="generar-bar">
+        <label class="check-pdf">
+          <input type="checkbox" id="checkPdf" />
+          Convertir también a PDF (requiere Microsoft Word instalado)
+        </label>
+        <button id="btnGenerar" class="btn btn-primario btn-grande" disabled>
+          Generar boletas
+        </button>
+      </footer>
+    </section>
+
+    <section id="pantallaResultado" class="panel oculto">
+      <div class="resultado-card">
+        <div class="resultado-icono">&#9989;</div>
+        <h2 id="resultadoTitulo">Boletas generadas</h2>
+        <p id="resultadoDetalle"></p>
+        <div class="resultado-botones">
+          <button id="btnAbrirCarpeta" class="btn btn-primario">Abrir carpeta de salida</button>
+          <button id="btnVolver" class="btn btn-secundario">Generar otra tanda</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="overlayCarga" class="overlay oculto">
+    <div class="spinner"></div>
+    <p id="overlayTexto">Procesando...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
