@@ -10,6 +10,8 @@ from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
 from parser import Contribuyente
@@ -165,6 +167,39 @@ def _agregar_pie(doc: Document):
     _p(doc, "Oficina de Patentes Automotor", align=WD_ALIGN_PARAGRAPH.CENTER, space_after=0)
 
 
+def _bordear_celda(cell):
+    """Dibuja un borde simple alrededor de la celda, formando el recuadro de recibo."""
+    tc_pr = cell._tc.get_or_add_tcPr()
+    bordes = OxmlElement("w:tcBorders")
+    for borde in ("top", "left", "bottom", "right"):
+        elemento = OxmlElement(f"w:{borde}")
+        elemento.set(qn("w:val"), "single")
+        elemento.set(qn("w:sz"), "8")
+        elemento.set(qn("w:space"), "4")
+        elemento.set(qn("w:color"), "000000")
+        bordes.append(elemento)
+    tc_pr.append(bordes)
+
+
+def _agregar_recibo(doc: Document):
+    _p(doc, space_before=24, space_after=4)
+
+    tabla = doc.add_table(rows=1, cols=1)
+    tabla.alignment = WD_TABLE_ALIGNMENT.CENTER
+    celda = tabla.rows[0].cells[0]
+    celda.width = Cm(17)
+    _bordear_celda(celda)
+
+    etiquetas = ["Notificado", "Firma", "Aclaración", "DNI", "Fecha"]
+    for i, etiqueta in enumerate(etiquetas):
+        p = celda.paragraphs[0] if i == 0 else celda.add_paragraph()
+        p.paragraph_format.space_before = Pt(2)
+        p.paragraph_format.space_after = Pt(2)
+        run = p.add_run(f"{etiqueta}: ")
+        run.bold = True
+        p.add_run("_" * 35)
+
+
 def generar_boleta(c: Contribuyente, numero: int, carpeta_salida: Path, fecha: datetime | None = None) -> Path:
     fecha = fecha or datetime.now()
     doc = Document()
@@ -188,6 +223,7 @@ def generar_boleta(c: Contribuyente, numero: int, carpeta_salida: Path, fecha: d
     _agregar_datos_contribuyente(doc, c, fecha)
     _agregar_tabla_dominios(doc, c)
     _agregar_pie(doc)
+    _agregar_recibo(doc)
 
     carpeta_salida.mkdir(parents=True, exist_ok=True)
     cuit_limpio = c.cuit.replace("-", "")
