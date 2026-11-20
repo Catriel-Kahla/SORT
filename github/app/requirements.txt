@@ -1,0 +1,5 @@
+pywebview
+python-docx
+openpyxl
+docx2pdf
+pyinstaller
